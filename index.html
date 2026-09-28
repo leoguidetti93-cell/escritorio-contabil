@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=5" />
 </head>
 <body>
   <header class="topbar" id="topo">
@@ -19,7 +19,6 @@
     </a>
     <nav class="desktop-nav" aria-label="Navegação principal">
       <a href="#inicio">Início</a>
-      <a href="#atalhos">Atalhos</a>
       <a href="#insights">Insights</a>
       <a href="#noticias">Notícias</a>
       <a href="#calendario">Calendário</a>
@@ -31,7 +30,7 @@
 
   <aside class="mobile-menu" id="mobileMenu" aria-hidden="true">
     <button class="menu-close" id="menuClose" aria-label="Fechar menu">×</button>
-    <a href="#inicio">Início</a><a href="#atalhos">Atalhos</a><a href="#insights">Insights</a><a href="#noticias">Notícias</a><a href="#calendario">Calendário</a><a href="#formularios">Formulários</a><a href="#sobre">Sobre</a>
+    <a href="#inicio">Início</a><a href="#insights">Insights</a><a href="#noticias">Notícias</a><a href="#calendario">Calendário</a><a href="#formularios">Formulários</a><a href="#sobre">Sobre</a>
   </aside>
 
   <main>
@@ -56,20 +55,6 @@
       </div>
     </section>
 
-    <section class="section" id="atalhos">
-      <div class="section-heading reveal">
-        <span class="eyebrow">ACESSO RÁPIDO</span>
-        <h2>Resolva o que precisa sem procurar demais.</h2>
-      </div>
-      <div class="quick-grid">
-        <a class="quick-card reveal" href="#admissao"><span class="icon">＋</span><h3>Admissão</h3><p>Envie dados para contratação.</p></a>
-        <a class="quick-card reveal" href="#rescisao"><span class="icon">↗</span><h3>Rescisão</h3><p>Solicite o desligamento.</p></a>
-        <a class="quick-card reveal" href="#calendario"><span class="icon">▦</span><h3>Calendário</h3><p>Veja próximos vencimentos.</p></a>
-        <button class="quick-card reveal" data-open-ai><span class="icon">G•IA</span><h3>Contador IA</h3><p>Tire dúvidas em linguagem simples.</p></button>
-        <a class="quick-card reveal" href="#noticias"><span class="icon">◎</span><h3>Notícias</h3><p>Acompanhe mudanças relevantes.</p></a>
-        <a class="quick-card reveal" href="#contato"><span class="icon">↘</span><h3>Contato</h3><p>Fale com nossa equipe.</p></a>
-      </div>
-    </section>
 
     <section class="section split-section" id="insights">
       <div class="section-heading reveal">
@@ -115,8 +100,8 @@
     <section class="section forms-section" id="formularios">
       <div class="section-heading reveal">
         <span class="eyebrow">SOLICITAÇÕES</span>
-        <h2>Formulários rápidos, sem login.</h2>
-        <p>Já deixamos a arquitetura pronta para enviar cada solicitação por e-mail e Telegram através de uma Supabase Edge Function.</p>
+        <h2>Formulários preparados para cada processo.</h2>
+        <p>Preencha somente as informações da solicitação escolhida. Na admissão, você também pode fotografar vários documentos e usar a IA para preencher automaticamente os dados encontrados.</p>
       </div>
       <div class="form-tabs reveal">
         <button class="form-tab active" data-form="admissao">Admissão</button>
@@ -127,18 +112,9 @@
       <div class="form-shell reveal">
         <form id="requestForm">
           <input type="hidden" id="requestType" name="tipo" value="admissao" />
-          <div class="field-grid">
-            <label><span>Empresa</span><input required name="empresa" placeholder="Razão social ou nome" /></label>
-            <label><span>CNPJ</span><input name="cnpj" placeholder="00.000.000/0000-00" /></label>
-            <label><span>Responsável</span><input required name="responsavel" placeholder="Seu nome" /></label>
-            <label><span>E-mail</span><input required type="email" name="email" placeholder="voce@empresa.com.br" /></label>
-            <label><span>Telefone / WhatsApp</span><input name="telefone" placeholder="(00) 00000-0000" /></label>
-            <label><span>Data desejada</span><input type="date" name="data" /></label>
-          </div>
-          <label><span id="detailLabel">Dados da admissão</span><textarea required name="detalhes" rows="6" placeholder="Informe nome do funcionário, cargo, salário, data de admissão e demais informações."></textarea></label>
-          <label class="file-field"><span>Anexos</span><input type="file" name="anexos" multiple disabled /><small>Upload será habilitado numa próxima etapa via Supabase Storage. Nesta versão, o envio de dados já está preparado.</small></label>
+          <div id="dynamicFields"></div>
           <div class="form-footer">
-            <div><strong id="formStatus">Pronto para configurar.</strong><p>Após conectarmos a Edge Function, a equipe recebe e-mail + alerta no Telegram.</p></div>
+            <div><strong id="formStatus">Pronto para enviar.</strong><p>A equipe recebe o resumo no Telegram e a solicitação por e-mail. Documentos da admissão seguem anexados ao e-mail.</p></div>
             <button class="btn primary" type="submit">Enviar solicitação</button>
           </div>
         </form>
@@ -185,6 +161,6 @@
     REQUEST_FUNCTION: "enviar-solicitacao"
   };
   </script>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>

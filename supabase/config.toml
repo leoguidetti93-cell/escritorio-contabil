@@ -4,3 +4,6 @@ verify_jwt = false
 
 [functions.contador-ia]
 verify_jwt = false
+
+[functions.extrair-documentos-admissao]
+verify_jwt = false
