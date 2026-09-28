@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d2e34" />
+  <meta name="description" content="Guidetti Contábil — contabilidade moderna, próxima e estratégica para empresas e pessoas." />
+  <title>Guidetti Contábil</title>
+  <link rel="icon" href="assets/simbolo-g.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar" id="topo">
+    <a class="brand" href="#topo" aria-label="Guidetti Contábil">
+      <img src="assets/logo-guidetti.png" alt="Guidetti Contábil" />
+    </a>
+    <nav class="desktop-nav" aria-label="Navegação principal">
+      <a href="#inicio">Início</a>
+      <a href="#atalhos">Atalhos</a>
+      <a href="#insights">Insights</a>
+      <a href="#noticias">Notícias</a>
+      <a href="#calendario">Calendário</a>
+      <a href="#formularios">Formulários</a>
+      <a href="#sobre">Sobre</a>
+    </nav>
+    <button class="menu-button" id="menuButton" aria-label="Abrir menu">☰</button>
+  </header>
+
+  <aside class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <button class="menu-close" id="menuClose" aria-label="Fechar menu">×</button>
+    <a href="#inicio">Início</a><a href="#atalhos">Atalhos</a><a href="#insights">Insights</a><a href="#noticias">Notícias</a><a href="#calendario">Calendário</a><a href="#formularios">Formulários</a><a href="#sobre">Sobre</a>
+  </aside>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-glow"></div>
+      <div class="hero-copy reveal">
+        <span class="eyebrow">CONTABILIDADE • FISCAL • TRABALHISTA • EMPRESARIAL</span>
+        <h1>Contabilidade que organiza o presente e ajuda a construir o próximo passo.</h1>
+        <p>Informação clara, atendimento próximo e soluções práticas para simplificar a rotina da sua empresa.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#formularios">Fazer uma solicitação</a>
+          <button class="btn secondary" data-open-ai>Falar com o Contador IA</button>
+        </div>
+        <div class="hero-status">
+          <span><b>24h</b> Contador IA</span>
+          <span><b>1 clique</b> para formulários</span>
+          <span><b>Atual</b> calendário e insights</span>
+        </div>
+      </div>
+      <div class="hero-mark reveal">
+        <div class="mark-card"><img src="assets/simbolo-g.png" alt="Símbolo Guidetti" /></div>
+      </div>
+    </section>
+
+    <section class="section" id="atalhos">
+      <div class="section-heading reveal">
+        <span class="eyebrow">ACESSO RÁPIDO</span>
+        <h2>Resolva o que precisa sem procurar demais.</h2>
+      </div>
+      <div class="quick-grid">
+        <a class="quick-card reveal" href="#admissao"><span class="icon">＋</span><h3>Admissão</h3><p>Envie dados para contratação.</p></a>
+        <a class="quick-card reveal" href="#rescisao"><span class="icon">↗</span><h3>Rescisão</h3><p>Solicite o desligamento.</p></a>
+        <a class="quick-card reveal" href="#calendario"><span class="icon">▦</span><h3>Calendário</h3><p>Veja próximos vencimentos.</p></a>
+        <button class="quick-card reveal" data-open-ai><span class="icon">G•IA</span><h3>Contador IA</h3><p>Tire dúvidas em linguagem simples.</p></button>
+        <a class="quick-card reveal" href="#noticias"><span class="icon">◎</span><h3>Notícias</h3><p>Acompanhe mudanças relevantes.</p></a>
+        <a class="quick-card reveal" href="#contato"><span class="icon">↘</span><h3>Contato</h3><p>Fale com nossa equipe.</p></a>
+      </div>
+    </section>
+
+    <section class="section split-section" id="insights">
+      <div class="section-heading reveal">
+        <span class="eyebrow">INSIGHTS GUIDETTI</span>
+        <h2>Conteúdo que ajuda a decidir melhor.</h2>
+        <p>Espaço preparado para análises curtas, alertas e explicações práticas do escritório.</p>
+      </div>
+      <div class="featured-insight reveal">
+        <span class="tag">EM DESTAQUE</span>
+        <h3>O que muda no caixa da empresa quando um tributo vence?</h3>
+        <p>Um formato editorial para explicar impactos, prazos e cuidados sem linguagem complicada.</p>
+        <a href="#">Ler insight →</a>
+      </div>
+      <div class="content-cards" id="insightCards"></div>
+    </section>
+
+    <section class="section dark-section" id="noticias">
+      <div class="section-heading reveal">
+        <span class="eyebrow">NOTÍCIAS</span>
+        <h2>O que merece atenção no meio contábil.</h2>
+        <p>Esta primeira versão usa conteúdo demonstrativo. Depois podemos alimentar manualmente por JSON ou automatizar com uma fonte confiável.</p>
+      </div>
+      <div class="news-grid" id="newsGrid"></div>
+    </section>
+
+    <section class="section" id="calendario">
+      <div class="section-heading reveal">
+        <span class="eyebrow">CALENDÁRIO TRIBUTÁRIO</span>
+        <h2>Próximos prazos em uma visão simples.</h2>
+        <p>A estrutura já está pronta para você manter por um arquivo JSON, sem banco e sem custo adicional.</p>
+      </div>
+      <div class="calendar-layout">
+        <div class="calendar-list" id="calendarList"></div>
+        <div class="calendar-note reveal">
+          <span class="tag">IMPORTANTE</span>
+          <h3>O calendário é informativo.</h3>
+          <p>Obrigações podem variar conforme regime tributário, atividade, município e situação da empresa. Em caso de dúvida, consulte o escritório.</p>
+          <button class="btn primary" data-open-ai>Perguntar ao Contador IA</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section forms-section" id="formularios">
+      <div class="section-heading reveal">
+        <span class="eyebrow">SOLICITAÇÕES</span>
+        <h2>Formulários rápidos, sem login.</h2>
+        <p>Já deixamos a arquitetura pronta para enviar cada solicitação por e-mail e Telegram através de uma Supabase Edge Function.</p>
+      </div>
+      <div class="form-tabs reveal">
+        <button class="form-tab active" data-form="admissao">Admissão</button>
+        <button class="form-tab" data-form="rescisao">Rescisão</button>
+        <button class="form-tab" data-form="ferias">Férias</button>
+        <button class="form-tab" data-form="outros">Outra solicitação</button>
+      </div>
+      <div class="form-shell reveal">
+        <form id="requestForm">
+          <input type="hidden" id="requestType" name="tipo" value="admissao" />
+          <div class="field-grid">
+            <label><span>Empresa</span><input required name="empresa" placeholder="Razão social ou nome" /></label>
+            <label><span>CNPJ</span><input name="cnpj" placeholder="00.000.000/0000-00" /></label>
+            <label><span>Responsável</span><input required name="responsavel" placeholder="Seu nome" /></label>
+            <label><span>E-mail</span><input required type="email" name="email" placeholder="voce@empresa.com.br" /></label>
+            <label><span>Telefone / WhatsApp</span><input name="telefone" placeholder="(00) 00000-0000" /></label>
+            <label><span>Data desejada</span><input type="date" name="data" /></label>
+          </div>
+          <label><span id="detailLabel">Dados da admissão</span><textarea required name="detalhes" rows="6" placeholder="Informe nome do funcionário, cargo, salário, data de admissão e demais informações."></textarea></label>
+          <label class="file-field"><span>Anexos</span><input type="file" name="anexos" multiple disabled /><small>Upload será habilitado numa próxima etapa via Supabase Storage. Nesta versão, o envio de dados já está preparado.</small></label>
+          <div class="form-footer">
+            <div><strong id="formStatus">Pronto para configurar.</strong><p>Após conectarmos a Edge Function, a equipe recebe e-mail + alerta no Telegram.</p></div>
+            <button class="btn primary" type="submit">Enviar solicitação</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="section about-section" id="sobre">
+      <div class="about-mark reveal"><img src="assets/simbolo-g.png" alt="" /></div>
+      <div class="about-copy reveal">
+        <span class="eyebrow">NOSSA HISTÓRIA</span>
+        <h2>Guidetti Contábil</h2>
+        <p>Este espaço foi pensado para contar a trajetória do escritório com calma: quando começou, como evoluiu, quais valores guiam o atendimento e o que diferencia a relação com cada cliente.</p>
+        <p>Na próxima rodada podemos substituir este texto pela história real do escritório e incluir fotos, equipe, números e marcos importantes.</p>
+      </div>
+    </section>
+
+    <section class="section contact-section" id="contato">
+      <div class="section-heading reveal"><span class="eyebrow">CONTATO</span><h2>Quando precisar, fale com a Guidetti.</h2></div>
+      <div class="contact-grid">
+        <div><span>WhatsApp</span><strong>Adicionar número</strong></div>
+        <div><span>E-mail</span><strong>Adicionar e-mail</strong></div>
+        <div><span>Endereço</span><strong>Adicionar endereço</strong></div>
+        <div><span>Horário</span><strong>Adicionar atendimento</strong></div>
+      </div>
+    </section>
+  </main>
+
+  <footer><img src="assets/logo-guidetti.png" alt="Guidetti Contábil" /><p>© 2026 Guidetti Contábil SS Ltda. Estrutura inicial em desenvolvimento.</p></footer>
+
+  <button class="ai-fab" data-open-ai aria-label="Abrir Contador IA"><span>G</span><div><b>Contador IA</b><small>Tire uma dúvida</small></div></button>
+  <div class="ai-panel" id="aiPanel" aria-hidden="true">
+    <div class="ai-head"><div class="ai-avatar">G</div><div><strong>Contador IA Guidetti</strong><small>Contábil • Fiscal • Trabalhista • Tributário</small></div><button id="closeAi">×</button></div>
+    <div class="ai-disclaimer">Respostas informativas. Casos específicos podem exigir análise da equipe do escritório.</div>
+    <div class="ai-messages" id="aiMessages"><div class="msg bot">Olá! Posso ajudar com dúvidas contábeis, fiscais, trabalhistas e empresariais. O que você precisa saber?</div></div>
+    <div class="ai-chips"><button>Simples Nacional</button><button>Funcionários</button><button>Nota fiscal</button><button>Impostos</button></div>
+    <form class="ai-input" id="aiForm"><textarea id="aiText" rows="1" placeholder="Digite sua dúvida..."></textarea><button type="submit">Enviar</button></form>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
