@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=6" />
 </head>
 <body>
   <header class="topbar" id="topo">
@@ -60,12 +60,12 @@
       <div class="section-heading reveal">
         <span class="eyebrow">INSIGHTS GUIDETTI</span>
         <h2>Conteúdo que ajuda a decidir melhor.</h2>
-        <p>Espaço preparado para análises curtas, alertas e explicações práticas do escritório.</p>
+        <p>Análises curtas, alertas e explicações práticas do escritório.</p>
       </div>
       <div class="featured-insight reveal">
         <span class="tag">EM DESTAQUE</span>
         <h3>O que muda no caixa da empresa quando um tributo vence?</h3>
-        <p>Um formato editorial para explicar impactos, prazos e cuidados sem linguagem complicada.</p>
+        <p>Explicações objetivas sobre impactos, prazos e cuidados.</p>
         <a href="#">Ler insight →</a>
       </div>
       <div class="content-cards" id="insightCards"></div>
@@ -75,7 +75,7 @@
       <div class="section-heading reveal">
         <span class="eyebrow">NOTÍCIAS</span>
         <h2>O que merece atenção no meio contábil.</h2>
-        <p>Esta primeira versão usa conteúdo demonstrativo. Depois podemos alimentar manualmente por JSON ou automatizar com uma fonte confiável.</p>
+        <p>Atualizações automáticas priorizando fontes oficiais, com link direto para a publicação original.</p>
       </div>
       <div class="news-grid" id="newsGrid"></div>
     </section>
@@ -84,7 +84,7 @@
       <div class="section-heading reveal">
         <span class="eyebrow">CALENDÁRIO TRIBUTÁRIO</span>
         <h2>Próximos prazos em uma visão simples.</h2>
-        <p>A estrutura já está pronta para você manter por um arquivo JSON, sem banco e sem custo adicional.</p>
+        <p>Vencimentos obtidos da Agenda Tributária oficial da Receita Federal, com acesso à fonte original.</p>
       </div>
       <div class="calendar-layout">
         <div class="calendar-list" id="calendarList"></div>
@@ -158,9 +158,10 @@
     SUPABASE_URL: "https://srwehwtfwmogrfhhzeix.supabase.co",
     SUPABASE_ANON_KEY: "sb_publishable_MMOlYD2ainKnk7QIF2pw9w_icGILcUL",
     AI_FUNCTION: "contador-ia",
-    REQUEST_FUNCTION: "enviar-solicitacao"
+    REQUEST_FUNCTION: "enviar-solicitacao",
+    CONTENT_FUNCTION: "conteudo-oficial"
   };
   </script>
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

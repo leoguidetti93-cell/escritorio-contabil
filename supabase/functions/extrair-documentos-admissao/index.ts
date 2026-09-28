@@ -9,13 +9,12 @@ serve(async(req)=>{
     if(!Array.isArray(files)||!files.length) return json({error:'Nenhum documento recebido'},400);
     if(files.length>8) return json({error:'Envie no máximo 8 imagens por leitura'},400);
     const key=Deno.env.get('OPENAI_API_KEY'); if(!key) throw new Error('OPENAI_API_KEY não configurada');
-    const content:any[]=[{type:'input_text',text:`Analise as imagens de documentos brasileiros de uma admissão trabalhista. Extraia apenas informações claramente visíveis. Não invente dados. Se houver conflito entre documentos, deixe o campo vazio quando não for possível decidir com segurança. Retorne SOMENTE JSON válido, sem markdown, neste formato:\n{"nome_completo":"","cpf":"","data_nascimento":"YYYY-MM-DD ou vazio","rg":"","pis_nis":"","nome_mae":"","estado_civil":"","cep":"","endereco":"","documentos_identificados":["CNH","CPF"]}.\nPara endereço, una logradouro, número, complemento, bairro, cidade e UF quando existirem. Preserve zeros à esquerda em documentos.`}];
-    for(const f of files){
-      if(!String(f.type||'').startsWith('image/')) continue;
-      content.push({type:'input_image',image_url:`data:${f.type};base64,${f.data}`});
-    }
+    const content:any[]=[{type:'input_text',text:`Analise as imagens de documentos brasileiros para uma admissão trabalhista. Leia todos os documentos em conjunto. Extraia somente dados claramente visíveis; nunca invente. Se houver conflito e não for possível decidir com segurança, deixe o campo vazio. Não extraia PIS/NIS. Retorne SOMENTE JSON válido, sem markdown, exatamente com estas chaves:
+{"nome_completo":"","cpf":"","data_nascimento":"YYYY-MM-DD ou vazio","rg":"","nome_mae":"","nome_pai":"","nacionalidade":"","naturalidade":"","estado_civil":"","sexo":"Feminino, Masculino ou vazio","cep":"","logradouro":"","numero":"","complemento":"","bairro":"","cidade":"","uf":"","documentos_identificados":["CNH","RG"]}.
+Preserve zeros à esquerda. Naturalidade deve ser cidade/UF quando isso estiver claro. Nacionalidade deve ser informada somente se constar no documento. Endereço deve ser dividido nos campos próprios.`}];
+    for(const f of files){if(String(f.type||'').startsWith('image/'))content.push({type:'input_image',image_url:`data:${f.type};base64,${f.data}`});}
     if(content.length===1) return json({error:'Nenhuma imagem válida recebida'},400);
-    const response=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},body:JSON.stringify({model:Deno.env.get('OPENAI_VISION_MODEL')||'gpt-5.6-luna',input:[{role:'user',content}],max_output_tokens:1200})});
+    const response=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},body:JSON.stringify({model:Deno.env.get('OPENAI_VISION_MODEL')||'gpt-5.6-luna',input:[{role:'user',content}],max_output_tokens:1400})});
     const raw=await response.json(); if(!response.ok) throw new Error(raw?.error?.message||'Erro ao analisar documentos');
     const out=raw.output_text||raw.output?.flatMap((x:any)=>x.content||[]).find((c:any)=>c.type==='output_text')?.text||'{}';
     const cleaned=String(out).replace(/^```json\s*/i,'').replace(/```$/,'').trim();
