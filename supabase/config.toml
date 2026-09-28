@@ -1,0 +1,6 @@
+# Guidetti Contábil - Edge Functions públicas chamadas pelo site estático
+[functions.enviar-solicitacao]
+verify_jwt = false
+
+[functions.contador-ia]
+verify_jwt = false

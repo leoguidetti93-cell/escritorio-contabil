@@ -29,9 +29,24 @@ $$('.reveal').forEach(el=>io.observe(el));
 const formCopy={admissao:['Dados da admissão','Informe nome do funcionário, cargo, salário, data de admissão e demais informações.'],rescisao:['Dados da rescisão','Informe funcionário, tipo de desligamento, data prevista, aviso prévio e observações.'],ferias:['Dados das férias','Informe funcionário, período desejado, abono e demais observações.'],outros:['Detalhes da solicitação','Descreva o que você precisa e inclua todas as informações relevantes.']};
 $$('.form-tab').forEach(btn=>btn.onclick=()=>{$$('.form-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');$('#requestType').value=btn.dataset.form;$('#detailLabel').textContent=formCopy[btn.dataset.form][0];$('textarea[name="detalhes"]').placeholder=formCopy[btn.dataset.form][1]});
 
-async function invokeFunction(name,body){if(!cfg.SUPABASE_URL||!cfg.SUPABASE_ANON_KEY) throw new Error('Integração ainda não configurada'); const r=await fetch(`${cfg.SUPABASE_URL}/functions/v1/${name}`,{method:'POST',headers:{'Content-Type':'application/json','apikey':cfg.SUPABASE_ANON_KEY,'Authorization':`Bearer ${cfg.SUPABASE_ANON_KEY}`},body:JSON.stringify(body)}); const data=await r.json().catch(()=>({})); if(!r.ok)throw new Error(data.error||'Falha na solicitação'); return data;}
+async function invokeFunction(name,body){
+  if(!cfg.SUPABASE_URL||!cfg.SUPABASE_ANON_KEY) throw new Error('Integração ainda não configurada');
+  const r=await fetch(`${cfg.SUPABASE_URL}/functions/v1/${name}`,{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'apikey':cfg.SUPABASE_ANON_KEY
+    },
+    body:JSON.stringify(body)
+  });
+  const raw=await r.text();
+  let data={};
+  try{data=raw?JSON.parse(raw):{}}catch{data={error:raw}}
+  if(!r.ok) throw new Error(data.error||`Falha na solicitação (HTTP ${r.status})`);
+  return data;
+}
 
-$('#requestForm').addEventListener('submit',async e=>{e.preventDefault();const st=$('#formStatus');const data=Object.fromEntries(new FormData(e.currentTarget).entries());st.textContent='Enviando...';try{const r=await invokeFunction(cfg.REQUEST_FUNCTION||'enviar-solicitacao',data);st.textContent=`Solicitação enviada${r.protocolo?' • '+r.protocolo:''}`;e.currentTarget.reset()}catch(err){st.textContent=cfg.SUPABASE_URL?'Não foi possível enviar agora.':'Integração ainda não configurada — estrutura pronta.'}});
+$('#requestForm').addEventListener('submit',async e=>{e.preventDefault();const st=$('#formStatus');const data=Object.fromEntries(new FormData(e.currentTarget).entries());st.textContent='Enviando...';try{const r=await invokeFunction(cfg.REQUEST_FUNCTION||'enviar-solicitacao',data);st.textContent=`Solicitação enviada${r.protocolo?' • '+r.protocolo:''}`;e.currentTarget.reset()}catch(err){console.error('Erro ao enviar solicitação:',err);st.textContent=cfg.SUPABASE_URL?`Não foi possível enviar agora. ${err.message||''}`:'Integração ainda não configurada — estrutura pronta.'}});
 
 const panel=$('#aiPanel'),messages=$('#aiMessages'),text=$('#aiText'); $$('[data-open-ai]').forEach(b=>b.onclick=()=>{panel.classList.add('open');panel.setAttribute('aria-hidden','false');setTimeout(()=>text.focus(),100)}); $('#closeAi').onclick=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true')};
 function addMsg(t,c){const d=document.createElement('div');d.className='msg '+c;d.textContent=t;messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d}
