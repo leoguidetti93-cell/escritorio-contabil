@@ -177,7 +177,15 @@
     <form class="ai-input" id="aiForm"><textarea id="aiText" rows="1" placeholder="Digite sua dúvida..."></textarea><button type="submit">Enviar</button></form>
   </div>
 
-<script src="config.js?v=2"></script>
-<script src="app.js"></script>
+<script>
+window.GUIDETTI_CONFIG = {
+  SUPABASE_URL: "https://srwehwtfwmogrfhhzeix.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_MMOlYD2ainKnk7QIF2pw9w_icGILcUL",
+  AI_FUNCTION: "contador-ia",
+  REQUEST_FUNCTION: "enviar-solicitacao"
+};
+</script>
+
+<script src="app.js?v=3"></script>
 </body>
 </html>
