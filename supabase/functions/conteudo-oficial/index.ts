@@ -58,7 +58,7 @@ function collectNews(html:string,base:string,source:string){
     if(!/(tribut|fiscal|receita|cnpj|simples|declara|dctf|esocial|trabalh|folha|crédito do trabalhador|nota fiscal|imposto|contribui)/i.test(title))continue;
     const url=abs(m[1],base);if(seen.has(url)||!url.startsWith('https://www.gov.br/'))continue;seen.add(url);
     out.push({date:source.toUpperCase(),title,text:`Atualização publicada em fonte oficial. Abra a matéria para consultar os detalhes e a data de publicação.`,url});
-    if(out.length>=5)break;
+    if(out.length>=8)break;
   }
   return out;
 }
@@ -87,7 +87,7 @@ async function news(){
   ];
   let items:any[]=[];
   for(const s of sources){try{items=items.concat(collectNews(await fetchText(s.url),s.url,s.name))}catch{/* mantém demais fontes */}}
-  const dedup=[...new Map(items.map(x=>[x.url,x])).values()].slice(0,6);
+  const dedup=[...new Map(items.map(x=>[x.url,x])).values()].slice(0,12);
   return {items:await summarizeWithAI(dedup),source:'gov.br — Receita Federal e eSocial'};
 }
 
@@ -96,9 +96,11 @@ serve(async(req)=>{
   if(req.method!=='POST')return json({error:'Método não permitido'},405);
   try{
     const {action}=await req.json();
-    if(action!=='calendar'&&action!=='news')return json({error:'Ação inválida'},400);
-    const maxAge=action==='news'?6*60*60*1000:12*60*60*1000;
+    if(!['calendar','news','news-home'].includes(action))return json({error:'Ação inválida'},400);
+    const maxAge=action==='news-home'?24*60*60*1000:action==='news'?48*60*60*1000:12*60*60*1000;
     const cached=await getCache(action,maxAge);if(cached)return json({...cached,cached:true});
-    const fresh=action==='news'?await news():await calendar();await setCache(action,fresh);return json({...fresh,cached:false});
+    const fresh=action==='calendar'?await calendar():await news();
+    if(action==='news-home')fresh.items=(fresh.items||[]).slice(0,3);
+    await setCache(action,fresh);return json({...fresh,cached:false});
   }catch(e){return json({error:String(e?.message||e)},500)}
 });

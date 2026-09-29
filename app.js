@@ -1,9 +1,36 @@
 const cfg=window.GUIDETTI_CONFIG||{};
 const $=(s,p=document)=>p.querySelector(s); const $$=(s,p=document)=>[...p.querySelectorAll(s)];
 
-const menu=$('#mobileMenu'); $('#menuButton').onclick=()=>{menu.classList.add('open');menu.setAttribute('aria-hidden','false')}; $('#menuClose').onclick=()=>{menu.classList.remove('open');menu.setAttribute('aria-hidden','true')}; $$('#mobileMenu a').forEach(a=>a.onclick=()=>menu.classList.remove('open'));
+const WHATSAPP={
+  geral:{number:'551938927600',message:'Olá! Vim pelo site da Guidetti Contábil e gostaria de falar com um especialista.'},
+  financeiro:{number:'5519997650995',message:'Olá! Vim pelo site da Guidetti Contábil e preciso falar com o setor financeiro.'}
+};
+function whatsappUrl(kind='geral'){const w=WHATSAPP[kind]||WHATSAPP.geral;return `https://wa.me/${w.number}?text=${encodeURIComponent(w.message)}`}
+function openWhatsApp(kind='geral'){window.open(whatsappUrl(kind),'_blank','noopener')}
+$$('[data-whatsapp]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();openWhatsApp(b.dataset.whatsapp||'geral')}));
 
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.12}); $$('.reveal').forEach(el=>io.observe(el));
+const menu=$('#mobileMenu');
+$('#menuButton').onclick=()=>{menu.classList.add('open');menu.setAttribute('aria-hidden','false')};
+$('#menuClose').onclick=()=>{menu.classList.remove('open');menu.setAttribute('aria-hidden','true')};
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+function observeReveals(){ $$('.reveal').forEach(el=>io.observe(el)); }
+observeReveals();
+
+const validPages=new Set(['home','insights','noticias','calendario','formularios','historia']);
+function pageFromHash(){const h=location.hash.replace('#','').trim();return validPages.has(h)?h:'home'}
+function showPage(page,pushHash=true){
+  if(!validPages.has(page))page='home';
+  $$('.page-view').forEach(v=>v.classList.toggle('active',v.dataset.page===page));
+  $$('[data-page-link]').forEach(a=>a.classList.toggle('active',a.dataset.pageLink===page));
+  menu.classList.remove('open'); menu.setAttribute('aria-hidden','true');
+  if(pushHash && location.hash!==`#${page}`) history.pushState(null,'',`#${page}`);
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(observeReveals,40);
+}
+$$('[data-page-link]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showPage(a.dataset.pageLink)}));
+window.addEventListener('popstate',()=>showPage(pageFromHash(),false));
+showPage(pageFromHash(),false);
 
 const insights=[
  {meta:'GESTÃO • 4 MIN',title:'Pró-labore, distribuição e retirada: por que separar?',text:'Evite misturar finanças pessoais e empresariais.'},
@@ -13,23 +40,28 @@ const insights=[
 $('#insightCards').innerHTML=insights.map(x=>`<article class="article-card reveal"><span class="meta">${x.meta}</span><h3>${x.title}</h3><p>${x.text}</p></article>`).join('');
 
 const fallbackNews=[
- {date:'FONTE OFICIAL',title:'Notícias contábeis e trabalhistas',text:'As atualizações oficiais aparecerão aqui automaticamente.',url:'https://www.gov.br/receitafederal/pt-br/assuntos/noticias'},
+ {date:'FONTE OFICIAL',title:'Notícias contábeis e tributárias',text:'As atualizações oficiais aparecerão aqui automaticamente.',url:'https://www.gov.br/receitafederal/pt-br/assuntos/noticias'},
  {date:'FONTE OFICIAL',title:'Atualizações do eSocial',text:'Comunicados e mudanças relevantes do ambiente trabalhista.',url:'https://www.gov.br/esocial/pt-br/noticias'},
- {date:'FONTE OFICIAL',title:'Agenda tributária da Receita Federal',text:'Prazos e vencimentos oficiais para consulta.',url:'https://www.gov.br/receitafederal/pt-br/assuntos/agenda-tributaria'}
+ {date:'FONTE OFICIAL',title:'Agenda Tributária da Receita Federal',text:'Prazos e vencimentos oficiais para consulta.',url:'https://www.gov.br/receitafederal/pt-br/assuntos/agenda-tributaria'}
 ];
 const fallbackCalendar=[
  {day:'—',month:'OFICIAL',title:'Agenda Tributária da Receita Federal',text:'Carregando próximos vencimentos oficiais.',type:'RFB',url:'https://www.gov.br/receitafederal/pt-br/assuntos/agenda-tributaria'}
 ];
-function renderNews(items){$('#newsGrid').innerHTML=(items?.length?items:fallbackNews).slice(0,6).map(x=>`<article class="news-card reveal"><small>${escapeHtml(x.date||'FONTE OFICIAL')}</small><h3>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.text||'')}</p>${x.url?`<a class="source-link" href="${escapeHtml(x.url)}" target="_blank" rel="noopener">Ver fonte oficial →</a>`:''}</article>`).join('');$$('.reveal').forEach(el=>io.observe(el))}
-function renderCalendar(items){$('#calendarList').innerHTML=(items?.length?items:fallbackCalendar).slice(0,8).map(x=>`<a class="calendar-item reveal" ${x.url?`href="${escapeHtml(x.url)}" target="_blank" rel="noopener"`:''}><div class="calendar-date"><b>${escapeHtml(x.day||'—')}</b><span>${escapeHtml(x.month||'')}</span></div><div><h4>${escapeHtml(x.title)}</h4><p>${escapeHtml(x.text||'')}</p></div><span class="calendar-type">${escapeHtml(x.type||'OFICIAL')}</span></a>`).join('');$$('.reveal').forEach(el=>io.observe(el))}
-renderNews(fallbackNews);renderCalendar(fallbackCalendar);
+function newsCard(x){return `<article class="news-card reveal"><small>${escapeHtml(x.date||'FONTE OFICIAL')}</small><h3>${escapeHtml(x.title)}</h3><p>${escapeHtml(x.text||'')}</p>${x.url?`<a class="source-link" href="${escapeHtml(x.url)}" target="_blank" rel="noopener">Ver fonte oficial →</a>`:''}</article>`}
+function renderHomeNews(items){$('#homeNewsGrid').innerHTML=(items?.length?items:fallbackNews).slice(0,3).map(newsCard).join('');observeReveals()}
+function renderNews(items){$('#newsGrid').innerHTML=(items?.length?items:fallbackNews).slice(0,12).map(newsCard).join('');observeReveals()}
+function renderCalendar(items){$('#calendarList').innerHTML=(items?.length?items:fallbackCalendar).slice(0,8).map(x=>`<a class="calendar-item reveal" ${x.url?`href="${escapeHtml(x.url)}" target="_blank" rel="noopener"`:''}><div class="calendar-date"><b>${escapeHtml(x.day||'—')}</b><span>${escapeHtml(x.month||'')}</span></div><div><h4>${escapeHtml(x.title)}</h4><p>${escapeHtml(x.text||'')}</p></div><span class="calendar-type">${escapeHtml(x.type||'OFICIAL')}</span></a>`).join('');observeReveals()}
+renderHomeNews(fallbackNews);renderNews(fallbackNews);renderCalendar(fallbackCalendar);
 async function loadOfficialContent(){
   if(!cfg.SUPABASE_URL||!cfg.SUPABASE_ANON_KEY)return;
   try{
-    const [n,c]=await Promise.allSettled([
+    const [homeN,n,c]=await Promise.allSettled([
+      invokeFunction(cfg.CONTENT_FUNCTION||'conteudo-oficial',{action:'news-home'}),
       invokeFunction(cfg.CONTENT_FUNCTION||'conteudo-oficial',{action:'news'}),
       invokeFunction(cfg.CONTENT_FUNCTION||'conteudo-oficial',{action:'calendar'})
     ]);
+    if(homeN.status==='fulfilled'&&Array.isArray(homeN.value.items))renderHomeNews(homeN.value.items);
+    else if(n.status==='fulfilled'&&Array.isArray(n.value.items))renderHomeNews(n.value.items);
     if(n.status==='fulfilled'&&Array.isArray(n.value.items))renderNews(n.value.items);
     if(c.status==='fulfilled'&&Array.isArray(c.value.items))renderCalendar(c.value.items);
   }catch(e){console.warn('Conteúdo oficial indisponível',e)}
@@ -166,6 +198,7 @@ const formSchemas={
   }
 };
 
+
 let admissionFiles=[];
 const fieldsRoot=$('#dynamicFields');
 function renderForm(type){$('#requestType').value=type;fieldsRoot.innerHTML=formSchemas[type].html;admissionFiles=[];bindDynamicForm(type)}
@@ -209,7 +242,31 @@ async function invokeFunction(name,body){if(!cfg.SUPABASE_URL||!cfg.SUPABASE_ANO
 
 $('#requestForm').addEventListener('submit',async e=>{e.preventDefault();const form=e.currentTarget,st=$('#formStatus'),submit=form.querySelector('button[type="submit"]');const fd=new FormData(form),data={};for(const [k,v] of fd.entries())if(!(v instanceof File))data[k]=v;data.tipo=$('#requestType').value;if(submit){submit.disabled=true;submit.dataset.originalText=submit.textContent;submit.textContent='Enviando...'}st.textContent='Enviando solicitação...';try{if(data.tipo==='admissao'&&admissionFiles.length)data.anexos=await Promise.all(admissionFiles.map(prepareAttachment));const r=await invokeFunction(cfg.REQUEST_FUNCTION||'enviar-solicitacao',data);const emailNote=r.email===false?' • Telegram enviado; e-mail não confirmado pelo serviço.':'';st.textContent=`Solicitação enviada com sucesso${r.protocolo?' • Protocolo '+r.protocolo:''}${emailNote}`;const type=data.tipo;form.reset();renderForm(type)}catch(err){console.error(err);st.textContent=`Não foi possível enviar agora. ${err.message||''}`}finally{if(submit){submit.disabled=false;submit.textContent=submit.dataset.originalText||'Enviar solicitação'}}});
 
-const panel=$('#aiPanel'),messages=$('#aiMessages'),text=$('#aiText');$$('[data-open-ai]').forEach(b=>b.onclick=()=>{panel.classList.add('open');panel.setAttribute('aria-hidden','false');setTimeout(()=>text.focus(),100)});$('#closeAi').onclick=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true')};
+
+
+const panel=$('#aiPanel'),messages=$('#aiMessages'),text=$('#aiText'),aiForm=$('#aiForm'),aiStart=$('#aiStart'),aiCategories=$('#aiCategories'),aiHumanRow=$('#aiHumanRow');
+let aiCategory='';
 function addMsg(t,c){const d=document.createElement('div');d.className='msg '+c;d.textContent=t;messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d}
-async function askAI(q){addMsg(q,'user');const wait=addMsg('Pensando…','bot');try{const r=await invokeFunction(cfg.AI_FUNCTION||'contador-ia',{message:q});wait.textContent=r.answer||'Não consegui responder agora.'}catch(err){wait.textContent='Não consegui acessar o Contador IA agora.'}}
-$('#aiForm').addEventListener('submit',e=>{e.preventDefault();const q=text.value.trim();if(!q)return;text.value='';askAI(q)});$$('.ai-chips button').forEach(b=>b.onclick=()=>askAI(`Tenho uma dúvida sobre ${b.textContent}.`));
+function resetAI(){
+  aiCategory='';
+  messages.innerHTML='<div class="msg bot">Olá! Posso ajudar com dúvidas contábeis, fiscais, trabalhistas e empresariais. O que você precisa saber?</div>';
+  aiStart.hidden=false; aiCategories.hidden=true; aiForm.hidden=true; aiHumanRow.hidden=true; text.value='';
+}
+$$('[data-open-ai]').forEach(b=>b.onclick=()=>{panel.classList.add('open');panel.setAttribute('aria-hidden','false');if(!messages.children.length)resetAI()});
+$('#closeAi').onclick=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true')};
+$('#aiQuickQuestion').onclick=()=>{aiStart.hidden=true;aiCategories.hidden=false;addMsg('Escolha o assunto da sua dúvida para eu direcionar melhor a resposta.','bot')};
+$('#aiSpecialist').onclick=()=>openWhatsApp('geral');
+$$('[data-ai-category]').forEach(b=>b.onclick=()=>{
+  const cat=b.dataset.aiCategory;
+  if(cat==='Financeiro'){openWhatsApp('financeiro');return}
+  aiCategory=cat; aiCategories.hidden=true; aiForm.hidden=false; aiHumanRow.hidden=false;
+  addMsg(`${cat} selecionado. Pode me contar sua dúvida.`,'bot'); setTimeout(()=>text.focus(),80);
+});
+$('#aiHuman').onclick=()=>openWhatsApp('geral');
+async function askAI(q){
+  addMsg(q,'user');const wait=addMsg('Pensando…','bot');
+  try{const prompt=aiCategory?`Área selecionada: ${aiCategory}. Pergunta do usuário: ${q}`:q;const r=await invokeFunction(cfg.AI_FUNCTION||'contador-ia',{message:prompt});wait.textContent=r.answer||'Não consegui responder agora.'}
+  catch(err){wait.textContent='Não consegui acessar o Contador IA agora.'}
+}
+aiForm.addEventListener('submit',e=>{e.preventDefault();const q=text.value.trim();if(!q)return;text.value='';askAI(q)});
+resetAI();
